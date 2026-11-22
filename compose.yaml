@@ -1,0 +1,26 @@
+name: beammp-template
+services:
+  beammp:
+    build: .
+    image: darco2903/beammp:latest
+    container_name: beammp
+    # The BeamMP server reads console commands from stdin
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+    # Time for the plugins' onShutdown after `docker stop` before Docker kills the server
+    stop_grace_period: 30s
+    environment:
+      # Empty: the AuthKey of ServerConfig.toml is used
+      BEAMMP_AUTH_KEY: ${BEAMMP_AUTH_KEY:-}
+    # Port of ServerConfig.toml, TCP and UDP
+    ports:
+      - "30814:30814/tcp"
+      - "30814:30814/udp"
+    volumes:
+      - data:/beammp
+
+volumes:
+  # Fixed name so it matches the plain `docker run` volume from the README
+  data:
+    name: beammp-data
